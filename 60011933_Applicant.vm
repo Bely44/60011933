@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:Request xmlns:tns="http://minenergy.smev.ru/epgu/universalorder/1.0.12"
+             xmlns:tp001="http://minenergy.smev.ru/epgu/universalorder/types/1.0.12"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://minenergy.smev.ru/epgu/universalorder/1.0.12 schemas.xsd">
+    <tns:OrderId>$orderId</tns:OrderId>
+    <tns:OrderTimestamp>$dateTool.get("yyyy-MM-dd")</tns:OrderTimestamp>
+    <tns:ServiceCode>60011933</tns:ServiceCode>
+    <tns:ApplicationRequest>
+        <tns:Form2>
+            #if ($s2c1 == "v1")
+                <tp001:OrderType>Вывод из эксплуатации объектов диспетчеризации</tp001:OrderType>
+            #elseif ($s2c1 == "v2")
+                <tp001:OrderType>Вывод из эксплуатации генерирующего оборудования,не отнесённого к объектам диспетчеризации</tp001:OrderType>
+            #elseif ($s2c1 == "v3")
+                <tp001:OrderType>Исправление ошибок или опечаток в ранее выданном документе</tp001:OrderType>
+            #end
+            <tp001:ApplicantInfo>
+                #if($orgType == "LEGAL")
+                    <tp001:LegalEntity>
+                        <tp001:FullName>$s4c4['storedValues']['fullName'].replace('&quot;', '"')</tp001:FullName>
+                        <tp001:ShortName>$s4c4['storedValues']['shortName'].replace('&quot;', '"')</tp001:ShortName>
+                        <tp001:INN>$s4c4['storedValues']['inn']</tp001:INN>
+                        <tp001:OGRN>$s4c4['storedValues']['ogrn']</tp001:OGRN>
+                        <tp001:LegalAddress>$s8c8['address']['fiasCode'], $s8c8['address']['fullAddress']</tp001:LegalAddress>
+                        #if($s10c10 && $s10c10 != "")
+                            <tp001:MailingAddress>$s10c10['fiasCode'], $s10c10['fullAddress']</tp001:MailingAddress>
+                        #else
+                            <tp001:MailingAddress>$s8c8['address']['fiasCode'], $s8c8['address']['fullAddress']</tp001:MailingAddress>
+                        #end
+                        <tp001:ContactInfo>
+                            <tp001:PhoneNumber>$s6c6</tp001:PhoneNumber>
+                            <tp001:Email>$s7c7</tp001:Email>
+                        </tp001:ContactInfo>
+                        <tp001:OrganizationHeadInfo>
+                            <tp001:FIO>
+                                <tp001:Surname>$s4c4['storedValues']['chiefLastName']</tp001:Surname>
+                                <tp001:Name>$s4c4['storedValues']['chiefFirstName']</tp001:Name>
+                                #if($s4c4['storedValues']['chiefMiddleName'] && $s4c4['storedValues']['chiefMiddleName'] != "")
+                                    <tp001:Patronymic>$s4c4['storedValues']['chiefMiddleName']</tp001:Patronymic>
+                                #end
+                            </tp001:FIO>
+                        </tp001:OrganizationHeadInfo>
+                    </tp001:LegalEntity>
+                #elseif($orgType == "BUSINESS")
+                    <tp001:BusinessmanInfo>
+                        <tp001:BusinessFullName>$s40c40['storedValues']['fullName']</tp001:BusinessFullName>
+                        <tp001:INN>$s40c40['storedValues']['inn']</tp001:INN>
+                        <tp001:OGRNIP>$s40c40['storedValues']['ogrn']</tp001:OGRNIP>
+                        <tp001:ContactInfo>
+                            <tp001:PhoneNumber>$s41c41</tp001:PhoneNumber>
+                            <tp001:Email>$s55c55</tp001:Email>
+                        </tp001:ContactInfo>
+                        <tp001:LegalAddress>$s42c42['address']['fiasCode'], $s42c42['address']['fullAddress']</tp001:LegalAddress>
+                        #if ($s44c44 && $s44c44 != "")
+                            <tp001:MailingAddress>$s44c44['fiasCode'], $s44c44['fullAddress']</tp001:MailingAddress>
+                        #else
+                            <tp001:MailingAddress>$s42c42['address']['fiasCode'], $s42c42['address']['fullAddress']</tp001:MailingAddress>
+                        #end
+                    </tp001:BusinessmanInfo>
+                #end
+            </tp001:ApplicantInfo>
+            <tp001:ObjectInfo>
+                #if($s2c1 == "v1")
+                    #if($s56c56 == "v1")
+                        #foreach($pointer in $s12c14)
+                            <tp001:AddMail>$pointer['s12c13']</tp001:AddMail>
+                        #end
+                    #end
+                    #if($s5c1 == "v1")
+                        <tp001:ObjectInfoOne>
+                            <tp001:ObjectMainName>$s13c14</tp001:ObjectMainName>
+                            <tp001:ObjectAddress>$s13c15['fiasCode'], $s13c15['fullAddress']</tp001:ObjectAddress>
+                             #if($s17c1 == "v1")
+                                <tp001:ObjectDate>$s13c13.substring(0,10)</tp001:ObjectDate>
+                            #end
+                            #if($s13c16 != "")
+                                <tp001:ExtraInfo1>$s13c16</tp001:ExtraInfo1>
+                            #end
+                            #if($s13c17 != "")
+                                <tp001:ExtraInfo2>$s13c17</tp001:ExtraInfo2>
+                            #end
+                            #if($s13c18 != "")
+                                <tp001:ExtraInfo3>$s13c18</tp001:ExtraInfo3>
+                            #end
+                            #foreach($pointer in $s14c14)
+                                <tp001:ObjectData>
+                                    <tp001:ObjectType>$pointer['s14c18']</tp001:ObjectType>
+                                    <tp001:ObjectName>$pointer['s14c15']</tp001:ObjectName>
+                                    #if($s17c1 == "v2")
+                                        <tp001:ObjectDateInd>$pointer['s14c16'].substring(0,10)</tp001:ObjectDateInd>
+                                    #end
+                                    #if($pointer['s14c17'] != "")
+                                        <tp001:ObjectPriority>$pointer['s14c17']</tp001:ObjectPriority>
+                                    #end
+                                    #if($pointer['s14c21'] != "")
+                                        <tp001:ObjectExtraDate>$pointer['s14c21'].substring(0,10)</tp001:ObjectExtraDate>
+                                    #end
+                                </tp001:ObjectData>
+                            #end
+                        </tp001:ObjectInfoOne>
+                    #elseif($s5c1 == "v2")
+                        <tp001:ObjectinfoTwo>
+                                <tp001:ObjectMainName>$s13c14</tp001:ObjectMainName>
+                                <tp001:ObjectAddress>$s13c15['fiasCode'], $s13c15['fullAddress']</tp001:ObjectAddress>
+                                #if($s17c1 == "v1")
+                                    <tp001:ObjectDate>$s13c13.substring(0,10)</tp001:ObjectDate>
+                                #end
+                                #foreach($pointer in $s14c14)
+                                    <tp001:ObjectData>
+                                        <tp001:ObjectType>$pointer['s14c19']</tp001:ObjectType>
+                                        <tp001:ObjectName>$pointer['s14c15']</tp001:ObjectName>
+                                        #if($s17c1 == "v2")
+                                            <tp001:ObjectDateInd>$pointer['s14c16'].substring(0,10)</tp001:ObjectDateInd>
+                                        #end
+                                        #if($pointer['s14c17'] != "")
+                                            <tp001:ObjectPriority>$pointer['s14c17']</tp001:ObjectPriority>
+                                        #end
+                                        #if($pointer['s14c21'] != "")
+                                            <tp001:ObjectExtraDate>$pointer['s14c21'].substring(0,10)</tp001:ObjectExtraDate>
+                                        #end
+                                    </tp001:ObjectData>
+                                #end
+                        </tp001:ObjectinfoTwo>
+                    #elseif($s5c1 == "v3")
+                        <tp001:ObjectinfoThree>
+                            #if($s17c1 == "v1")
+                                <tp001:ObjectDate>$s24c24.substring(0,10)</tp001:ObjectDate>
+                            #end
+                            #foreach($pointer in $s14c14)
+                                <tp001:ObjectData>
+                                    <tp001:ObjectType>$pointer['s14c20']</tp001:ObjectType>
+                                    <tp001:ObjectName>$pointer['s14c15']</tp001:ObjectName>
+                                    <tp001:ObjectAddress>$pointer['s14c24']</tp001:ObjectAddress>
+                                    #if($s17c1 == "v2")
+                                        <tp001:ObjectDateInd>$pointer['s14c16'].substring(0,10)</tp001:ObjectDateInd>
+                                    #end
+                                    #if($pointer['s14c17'] != "")
+                                        <tp001:ObjectPriority>$pointer['s14c17']</tp001:ObjectPriority>
+                                    #end
+                                    #if($pointer['s14c21'] != "")
+                                        <tp001:ObjectExtraDate>$pointer['s14c21'].substring(0,10)</tp001:ObjectExtraDate>
+                                    #end
+                                </tp001:ObjectData>
+                            #end
+                        </tp001:ObjectinfoThree>
+                    #end
+                #elseif($s2c1 == "v2")
+                    #if($s56c56 == "v1")
+                        #foreach($pointer in $s12c14)
+                            <tp001:AddMail>$pointer['s12c13']</tp001:AddMail>
+                        #end
+                    #end
+                    <tp001:ObjectInfoFour>
+                        <tp001:ObjectMainName>$s19c2</tp001:ObjectMainName>
+                        <tp001:ObjectAddress>$s19c1['fiasCode'], $s19c1['fullAddress']</tp001:ObjectAddress>
+                        #if($s17c1 == "v1")
+                            <tp001:ObjectDate>$s19c3.substring(0,10)</tp001:ObjectDate>
+                        #end
+                        #foreach($pointer in $s23c23)
+                            <tp001:ObjectData>
+                                <tp001:ObjectName>$pointer['s23c1']</tp001:ObjectName>
+                                #if($s17c1 == "v2")
+                                    <tp001:ObjectDateInd>$pointer['s23c2'].substring(0,10)</tp001:ObjectDateInd>
+                                #end
+                            </tp001:ObjectData>
+                        #end
+                    </tp001:ObjectInfoFour>
+                #elseif($s2c1 == "v3")
+                    #if($s56c56 == "v1")
+                        #foreach($pointer in $s12c14)
+                            <tp001:AddMail>$pointer['s12c13']</tp001:AddMail>
+                        #end
+                    #end
+                    <tp001:Docinfo>
+                        <tp001:DocName>$s16c1</tp001:DocName>
+                        <tp001:DocNumber>$s16c2</tp001:DocNumber>
+                        <tp001:DocDate>$s16c3.substring(0,10)</tp001:DocDate>
+                        #if ($s16c4 != "")
+                            <tp001:ErorrDesc>$s16c4</tp001:ErorrDesc>
+                        #end
+                    </tp001:Docinfo>
+                #end
+            </tp001:ObjectInfo>
+            <tp001:ResultDoc>Электронно</tp001:ResultDoc>
+            <tp001:AppliedDocuments>
+                #if ($s27c27 != '')
+                    #foreach($dev in $s27c27['uploads'])
+                        #foreach($fi in $dev['value'])
+                            #if($dev['uploadId'] == "doc1")
+                                <tp001:AppliedDocument>
+                                    <tp001:FileName>$fi['fileName']</tp001:FileName>
+                                    <tp001:URL>$fi['mnemonic'].$fi['fileExt']</tp001:URL>
+                                    <tp001:MimeType>$fi['mimeType']</tp001:MimeType>
+                                </tp001:AppliedDocument>
+                            #end	
+                        #end
+                    #end
+                #end
+                #if ($s15c15 != '')
+                    #foreach($dev in $s15c15['uploads'])
+                        #foreach($fi in $dev['value'])
+                            #if($dev['uploadId'] == "doc2")
+                                <tp001:AppliedDocument>
+                                    <tp001:FileName>$fi['fileName']</tp001:FileName>
+                                    <tp001:URL>$fi['mnemonic'].$fi['fileExt']</tp001:URL>
+                                    <tp001:MimeType>$fi['mimeType']</tp001:MimeType>
+                                </tp001:AppliedDocument>
+                            #end	
+                        #end
+                    #end
+                #end
+                #if ($s28c28 != '')
+                    #foreach($dev in $s28c28['uploads'])
+                        #foreach($fi in $dev['value'])
+                            #if($dev['uploadId'] == "doc3")
+                                <tp001:AppliedDocument>
+                                    <tp001:FileName>$fi['fileName']</tp001:FileName>
+                                    <tp001:URL>$fi['mnemonic'].$fi['fileExt']</tp001:URL>
+                                    <tp001:MimeType>$fi['mimeType']</tp001:MimeType>
+                                </tp001:AppliedDocument>
+                            #end	
+                        #end
+                    #end
+                #end
+                #if ($s29c29 != '')
+                    #foreach($dev in $s29c29['uploads'])
+                        #foreach($fi in $dev['value'])
+                            #if($dev['uploadId'] == "doc4")
+                                <tp001:AppliedDocument>
+                                    <tp001:FileName>$fi['fileName']</tp001:FileName>
+                                    <tp001:URL>$fi['mnemonic'].$fi['fileExt']</tp001:URL>
+                                    <tp001:MimeType>$fi['mimeType']</tp001:MimeType>
+                                </tp001:AppliedDocument>
+                            #end	
+                        #end
+                    #end
+                #end
+                #if ($s30c30 != '')
+                    #foreach($dev in $s30c30['uploads'])
+                        #foreach($fi in $dev['value'])
+                            #if($dev['uploadId'] == "doc5")
+                                <tp001:AppliedDocument>
+                                    <tp001:FileName>$fi['fileName']</tp001:FileName>
+                                    <tp001:URL>$fi['mnemonic'].$fi['fileExt']</tp001:URL>
+                                    <tp001:MimeType>$fi['mimeType']</tp001:MimeType>
+                                </tp001:AppliedDocument>
+                            #end	
+                        #end
+                    #end
+                #end
+            </tp001:AppliedDocuments>
+        </tns:Form2>
+    </tns:ApplicationRequest>
+</tns:Request>

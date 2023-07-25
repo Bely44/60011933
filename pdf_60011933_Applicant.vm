@@ -1,0 +1,150 @@
+[
+#if ($s2c1 == "v1")        
+    {"className":"Form", "label": "Вывод из эксплуатации объектов электроэнергетики", "value": ""},
+#elseif ($s2c1 == "v2")
+    {"className":"Form", "label": "Вывод из эксплуатации генерирующего оборудования, не отнесённого к объектам диспетчеризации", "value": ""},
+#elseif ($s2c1 == "v3")
+    {"className":"Form", "label": "Вывод из эксплуатации объектов электроэнергетики: Исправление ошибок или опечаток в ранее выданном документе", "value": ""},
+#end
+	{"className":"FormStep", "label": "Номер заявления на ЕПГУ", "value": ""},
+	{"className":"FieldText", "label": "", "value": "$orderId"},
+	{"className":"FormStep", "label": "Дата и время подачи заявления", "value": ""},
+	{"className":"FieldText", "label": "", "value": "$dateTool.get("dd.MM.yyyy HH:mm:ss")"},
+    {"className":"FormStep", "label": "Сведения о заявителе", "value": ""},
+#if($orgType == "LEGAL")
+    {"className":"FieldText", "label": "Полное наименование организации", "value": "$s4c4['storedValues']['fullName'].replace('&quot;', '"')"},
+    {"className":"FieldText", "label": "Сокращённое наименование организации", "value": "$s4c4['storedValues']['shortName'].replace('&quot;', '"')"},
+    {"className":"FieldText", "label": "ИНН", "value": "$s4c4['storedValues']['inn']"},
+    {"className":"FieldText", "label": "ОГРН", "value": "$s4c4['storedValues']['ogrn']"},
+    {"className":"FieldText", "label": "Юридический адрес", "value": "$s8c8['address']['fullAddress']"},
+    #if($s10c10 && $s10c10 != "")
+        {"className":"FieldText", "label": "Фактический адрес", "value": "$s10c10['fullAddress']"},
+    #else
+        {"className":"FieldText", "label": "Фактический адрес", "value": "$s8c8['address']['fullAddress']"},
+    #end
+    {"className":"Panel", "label": "Контактная информация", "value": ""},
+    {"className":"FieldText", "label": "Номер телефона организации", "value": "$s6c6"},
+    {"className":"FieldText", "label": "Электронная почта организации", "value": "$s7c7"},
+    {"className":"Panel", "label": "Сведения об ответственном исполнителе", "value": ""},
+    {"className":"FieldText", "label": "Фамилия", "value": "$s11c13"},
+    {"className":"FieldText", "label": "Имя", "value": "$s11c12"},
+    #if ($s11c14 && $s11c14 != "")
+        {"className":"FieldText", "label": "Отчество", "value": "$s11c14"},
+    #end
+    {"className":"FieldText", "label": "Номер телефона", "value": "$s11c16"},
+    {"className":"FieldText", "label": "Электронная почта", "value": "$s11c17"},  
+#elseif($orgType == "BUSINESS")
+    {"className":"FieldText", "label": "Фамилия индивидуального предпринимателя", "value": "$s40c40['storedValues']['chiefLastName']"},
+    {"className":"FieldText", "label": "Имя индивидуального предпринимателя", "value": "$s40c40['storedValues']['chiefFirstName']"},
+    #if ($s40c40['storedValues']['chiefMiddleName'] && $s40c40['storedValues']['chiefMiddleName'] != "")
+        {"className":"FieldText", "label": "Отчество индивидуального предпринимателя", "value": "$s40c40['storedValues']['chiefMiddleName']"},
+    #end
+    {"className":"FieldText", "label": "ИНН", "value": "$s40c40['storedValues']['inn']"},
+    {"className":"FieldText", "label": "ОГРНИП", "value": "$s40c40['storedValues']['ogrn']"},
+    {"className":"FieldText", "label": "Адрес регистрации индивидуального предпринимателя", "value": "$s42c42['address']['fullAddress']"},
+    #if ($s44c44 && $s44c44 != "")
+        {"className":"FieldText", "label": "Фактический адрес индивидуального предпринимателя", "value": "$s44c44['fullAddress']"},
+    #else
+        {"className":"FieldText", "label": "Фактический адрес индивидуального предпринимателя", "value": "$s42c42['address']['fullAddress']"},
+    #end
+        
+    {"className":"Panel", "label": "Контактная информация", "value": ""},
+    {"className":"FieldText", "label": "Номер телефона индивидуального предпринимателя", "value": "$s41c41"},
+    {"className":"FieldText", "label": "Электронная почта индивидуального предпринимателя", "value": "$s55c55"},
+#end
+#if($s2c1 == "v1")
+    #if($s56c56 == "v1")
+        {"className":"FormStep", "label": "Контакты для информационного взаимодействия", "value": ""},
+        #foreach($ci in $s12c14)
+            {"className":"FieldText", "label": "Электронная почта", "value": "$ci['s12c13']"},
+        #end
+    #end
+    #if($s5c1 == "v1")
+        {"className":"FormStep", "label": "Сведения об объектах электроэнергетики", "value": ""},
+        {"className":"FieldText", "label": "Наименование объекта, в состав которого входит объект планируемый к выводу", "value": "$s13c14"},
+        {"className":"FieldText", "label": "Местонахождение объекта", "value": "$s13c15['fullAddress']"},
+        #if ($s17c1 == "v1")
+            {"className":"FieldText", "label": "Планируемая дата вывода из эксплуатации всех объектов", "value": "$s13c13.substring(0,10)"},
+        #end
+        #if ($s13c17 != "")
+            {"className":"FieldText", "label": "Диспетчерское наименование генерирующего оборудования, вывод которого приостанавливается, если невозможен вывод электросетевого оборудования", "value": "$s13c17"},
+        #end
+        #if ($s13c18 != "")
+            {"className":"FieldText", "label": "Информация о мероприятиях по вводу оборудования электростанции, установка которого осуществляется взамен выводимого объекта в рамках КОММод", "value": "$s13c18"},
+        #end
+        #foreach($ci in $s14c14)
+            {"className":"FieldText", "label": "Тип объекта", "value": "$ci['s14c18']"},
+            {"className":"FieldText", "label": "Диспетчерское наименование объекта диспетчеризации, планируемого к выводу из эксплуатации", "value": "$ci['s14c15']"},
+            #if($s17c1 == "v2")
+                {"className":"FieldText", "label": "Планируемая дата вывода из эксплуатации", "value": "$ci['s14c16'].substring(0,10)"},                  
+            #end
+            #if($ci['s14c17'] != "")
+                {"className":"FieldText", "label": "Приоритет вывода", "value": "$ci['s14c17']"},                  
+            #end
+            #if($ci['s14c21'] != "")
+                {"className":"FieldText", "label": "Ранняя дата вывода из эксплуатации", "value": "$ci['s14c21'].substring(0,10)"},                  
+            #end
+        #end
+    #elseif($s5c1 == "v2")
+        {"className":"FormStep", "label": "Сведения об объектах электроэнергетики", "value": ""},
+        {"className":"FieldText", "label": "Наименование объекта, в состав которого входит объект планируемый к выводу", "value": "$s13c14"},
+        {"className":"FieldText", "label": "Местонахождение объекта", "value": "$s13c15['fullAddress']"},
+        #if ($s17c1 == "v1")
+            {"className":"FieldText", "label": "Планируемая дата вывода из эксплуатации всех объектов", "value": "$s13c13.substring(0,10)"},
+        #end
+        #foreach($ci in $s14c14)
+            {"className":"FieldText", "label": "Тип объекта", "value": "$ci['s14c19']"},
+            {"className":"FieldText", "label": "Диспетчерское наименование объекта диспетчеризации, планируемого к выводу из эксплуатации", "value": "$ci['s14c15']"},
+            #if($s17c1 == "v2")
+                {"className":"FieldText", "label": "Планируемая дата вывода из эксплуатации", "value": "$ci['s14c16'].substring(0,10)"},                  
+            #end
+            #if($ci['s14c17'] != "")
+                {"className":"FieldText", "label": "Приоритет вывода", "value": "$ci['s14c17']"},                  
+            #end
+            #if($ci['s14c21'] != "")
+                {"className":"FieldText", "label": "Ранняя дата вывода из эксплуатации", "value": "$ci['s14c21'].substring(0,10)"},                  
+            #end
+        #end
+    #elseif($s5c1 == "v3")
+        {"className":"FormStep", "label": "Сведения об объектах электроэнергетики", "value": ""},
+        #if ($s17c1 == "v1")
+            {"className":"FieldText", "label": "Планируемая дата вывода из эксплуатации всех объектов", "value": "$s24c24.substring(0,10)"},
+        #end
+        #foreach($ci in $s14c14)
+            {"className":"FieldText", "label": "Тип объекта", "value": "$ci['s14c20']"},
+            {"className":"FieldText", "label": "Местонахождение объекта", "value": "$ci['s14c24']"},
+            {"className":"FieldText", "label": "Диспетчерское наименование объекта диспетчеризации, планируемого к выводу из эксплуатации", "value": "$ci['s14c15']"},
+            #if($s17c1 == "v2")
+                {"className":"FieldText", "label": "Планируемая дата вывода из эксплуатации", "value": "$ci['s14c16'].substring(0,10)"},                  
+            #end
+            #if($ci['s14c17'] != "")
+                {"className":"FieldText", "label": "Приоритет вывода", "value": "$ci['s14c17']"},                  
+            #end
+            #if($ci['s14c21'] != "")
+                {"className":"FieldText", "label": "Ранняя дата вывода из эксплуатации", "value": "$ci['s14c21'].substring(0,10)"},                  
+            #end
+        #end
+    #end
+#elseif($s2c1 == "v2")
+    {"className":"FormStep", "label": "Сведения об объектах электроэнергетики", "value": ""},
+    {"className":"FieldText", "label": "Наименование объекта, в состав которого входит объект планируемый к выводу", "value": "$s19c2"},
+    {"className":"FieldText", "label": "Местонахождение объекта", "value": "$s19c1['fullAddress']"},
+    #if ($s17c1 == "v1")
+        {"className":"FieldText", "label": "Планируемая дата вывода из эксплуатации всех объектов", "value": "$s19c3.substring(0,10)"},
+    #end
+    #foreach($ci in $s23c23)
+        {"className":"FieldText", "label": "Диспетчерское наименование объекта диспетчеризации, планируемого к выводу из эксплуатации", "value": "$ci['s23c1']"},
+        #if($s17c1 == "v2")
+            {"className":"FieldText", "label": "Планируемая дата вывода из эксплуатации", "value": "$ci['s23c2'].substring(0,10)"},                  
+        #end
+    #end
+#elseif( $s2c1 == "v3")
+    {"className":"FormStep", "label": "Cведения о документе", "value": ""},
+
+    {"className":"FieldText", "label": "Наименование документа", "value": "$s16c1"},
+    {"className":"FieldText", "label": "Регистрационный номер документа", "value": "$s16c2"},
+    {"className":"FieldText", "label": "Дата регистрации документа", "value": "$s16c3.substring(0,10)"},
+    {"className":"FieldText", "label": "Описание ошибки или опечатки", "value": "$s16c4"},
+#end
+{}
+]
